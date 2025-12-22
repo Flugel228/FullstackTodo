@@ -1,0 +1,3 @@
+../vestmedservice/tmp
+.idea
+docker-compose.*.yml

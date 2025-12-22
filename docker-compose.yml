@@ -1,0 +1,84 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: _docker/nginx/app/Dockerfile
+    volumes:
+      - ./backend/:/var/www/backend
+      - ./frontend/:/app
+      - ./_docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./_docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8876:80"
+    container_name: ft_nginx
+    networks:
+      - ft_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: _docker/app/Dockerfile
+    volumes:
+      - ./backend/:/var/www/backend
+    container_name: ft_backend
+    networks:
+      - ft_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: _docker/app/Dockerfile
+    volumes:
+      - ./frontend/:/app
+    container_name: ft_frontend
+    networks:
+      - ft_network
+
+  db:
+    image: postgres:17.5
+    restart: always
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ft
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+    ports:
+      - "8101:5432"
+    container_name: ft_db
+    networks:
+      - ft_network
+
+  db_test:
+    image: postgres:17.5
+    restart: always
+    volumes:
+      - ./tmp/db_test:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ft
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+    ports:
+      - "8109:5432"
+    container_name: ft_db_test
+    networks:
+      - ft_network
+
+  redis:
+    image: redis:8.0.3-alpine
+    restart: always
+    environment:
+      REDIS_USERNAME: admin
+      REDIS_PASSWORD: admin
+    volumes:
+      - ./tmp/redis:/data
+    ports:
+      - "8003:6379"
+    command: redis-server --appendonly yes
+    container_name: ft_redis
+    networks:
+      - ft_network
+
+networks:
+  ft_network:
+    driver: bridge
