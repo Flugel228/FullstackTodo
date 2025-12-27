@@ -7,7 +7,7 @@ defineProps<IProps>();
 </script>
 
 <template>
-  <RouterLink :to="{ name: to }">
+  <RouterLink :to="to">
     <slot></slot>
   </RouterLink>
 </template>

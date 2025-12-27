@@ -1,5 +1,5 @@
-import {TRoutesNames} from "@/shared/types/routes";
+import {AppRouteLocationRaw} from "@/shared/types/routes";
 
 export interface IProps {
-    to: TRoutesNames
+    to: AppRouteLocationRaw
 }
